@@ -1,0 +1,69 @@
+BEGIN
+Time: 0.266 ms
+ Aggregate  (cost=22031.30..22031.31 rows=1 width=8) (actual time=392.926..392.928 rows=1 loops=1)
+   ->  Foreign Scan on customer_reviews  (cost=0.00..17625.04 rows=1762504 width=0) (actual time=0.054..214.139 rows=1762504 loops=1)
+         CStore File: /usr/local/var/postgres/cstore_fdw/13708/57929
+         CStore File Size: 105380083
+ Planning Time: 0.721 ms
+ Execution Time: 393.085 ms
+(6 rows)
+
+Time: 396.986 ms
+ Aggregate  (cost=27509.56..27509.57 rows=1 width=40) (actual time=437.091..437.092 rows=1 loops=1)
+   ->  Foreign Scan on customer_reviews  (cost=0.00..18697.04 rows=1762504 width=4) (actual time=2.496..246.266 rows=1762504 loops=1)
+         CStore File: /usr/local/var/postgres/cstore_fdw/13708/57929
+         CStore File Size: 105380083
+ Planning Time: 0.579 ms
+ Execution Time: 437.693 ms
+(6 rows)
+
+Time: 441.452 ms
+ HashAggregate  (cost=28581.56..28583.56 rows=200 width=40) (actual time=740.363..740.366 rows=7 loops=1)
+   Group Key: product_group
+   Batches: 1  Memory Usage: 40kB
+   ->  Foreign Scan on customer_reviews  (cost=0.00..19769.04 rows=1762504 width=36) (actual time=4.934..310.082 rows=1762504 loops=1)
+         CStore File: /usr/local/var/postgres/cstore_fdw/66125/82505
+         CStore File Size: 105380083
+ Planning Time: 10.362 ms
+ Execution Time: 740.650 ms
+(8 rows)
+
+Time: 751.012 ms
+ HashAggregate  (cost=27509.56..27511.56 rows=200 width=12) (actual time=565.083..565.345 rows=1505 loops=1)
+   Group Key: review_date
+   Batches: 1  Memory Usage: 209kB
+   ->  Foreign Scan on customer_reviews  (cost=0.00..18697.04 rows=1762504 width=4) (actual time=2.485..229.502 rows=1762504 loops=1)
+         CStore File: /usr/local/var/postgres/cstore_fdw/66125/82505
+         CStore File Size: 105380083
+ Planning Time: 10.423 ms
+ Execution Time: 565.734 ms
+(8 rows)
+
+Time: 576.157 ms
+ Foreign Scan on customer_reviews  (cost=0.00..40610.08 rows=1 width=116) (actual time=49.216..230.141 rows=5 loops=1)
+   Filter: ((product_title ~~ '%Dune%'::text) AND (review_date >= '1998-01-01'::date) AND (review_date <= '1998-12-31'::date) AND (customer_id = 'A27T7HVDXA3K2A'::text))
+   Rows Removed by Filter: 459854
+   CStore File: /usr/local/var/postgres/cstore_fdw/66125/82505
+   CStore File Size: 105380083
+ Planning Time: 7.958 ms
+ Execution Time: 230.569 ms
+(7 rows)
+
+Time: 241.751
+ Sort  (cost=117213.26..117275.43 rows=24868 width=44) (actual time=1057.166..1057.168 rows=6 loops=1)
+   Sort Key: (width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5))
+   Sort Method: quicksort  Memory: 25kB
+   ->  HashAggregate  (cost=105387.61..115397.64 rows=24868 width=44) (actual time=1057.078..1057.159 rows=6 loops=1)
+         Group Key: width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5)
+         Batches: 1  Memory Usage: 793kB
+         ->  Foreign Scan on customer_reviews  (cost=0.00..34319.79 rows=1209665 width=8) (actual time=2.580..785.589 rows=1198218 loops=1)
+               Filter: (product_group = 'Book'::text)
+               Rows Removed by Filter: 564286
+               CStore File: /usr/local/var/postgres/cstore_fdw/13708/57929
+               CStore File Size: 105380083
+ Planning Time: 0.240 ms
+ Execution Time: 1062.560 ms
+(13 rows)
+Time: 1071.718 ms (00:01.072)
+ROLLBACK
+Time: 0.324 ms

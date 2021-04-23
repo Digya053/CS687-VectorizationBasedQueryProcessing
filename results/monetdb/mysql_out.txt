@@ -1,0 +1,52 @@
+sysdate(6)
+2021-04-21 08:24:28.559680
+count(*)
+8131
+sysdate(6)
+2021-04-21 08:24:28.659516
+sysdate(6)
+2021-04-21 08:24:28.660642
+chamber	average
+A	282996.6270
+Z	259300.5164
+D	149522.7638
+R	149628.2890
+H	150182.3945
+E	149518.0222
+NULL	83309.0000
+sysdate(6)
+2021-04-21 08:24:28.683152
+sysdate(6)
+2021-04-21 08:24:28.685472
+type	total
+craftsmen	2349
+impotenten	938
+passengers	2813
+seafarers	4468
+soldiers	4177
+total	2467
+sysdate(6)
+2021-04-21 08:24:28.808857
+sysdate(6)
+2021-04-21 08:24:28.809910
+count(*)
+938
+sysdate(6)
+2021-04-21 08:24:28.815447
+sysdate(6)
+2021-04-21 08:24:28.815519
+COUNT(*)
+358
+sysdate(6)
+2021-04-21 08:24:28.826230
+sysdate(6)
+2021-04-21 08:24:28.826342
+type	total
+craftsmen	2349
+impotenten	938
+passengers	2813
+seafarers	4468
+soldiers	4177
+total	2467
+sysdate(6)
+2021-04-21 08:24:28.861402

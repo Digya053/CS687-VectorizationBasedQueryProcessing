@@ -1,0 +1,64 @@
+BEGIN
+Time: 0.509 ms
+ Aggregate  (cost=4406.26..4406.27 rows=1 width=8) (actual time=362.423..362.424 rows=1 loops=1)
+   ->  Custom Scan (ColumnarScan) on customer_reviews_amm  (cost=0.00..0.00 rows=1762504 width=0) (actual time=0.227..202.401 rows=1762504 loops=1)
+         Columnar Chunk Groups Removed by Filter: 0
+ Planning Time: 1.911 ms
+ Execution Time: 362.457 ms
+(5 rows)
+
+Time: 364.796 ms
+ Aggregate  (cost=9488.87..9488.88 rows=1 width=40) (actual time=406.372..406.374 rows=1 loops=1)
+   ->  Custom Scan (ColumnarScan) on customer_reviews_amm  (cost=0.00..676.35 rows=1762504 width=4) (actual time=0.355..223.391 rows=1762504 loops=1)
+         Columnar Chunk Groups Removed by Filter: 0
+ Planning Time: 5.008 ms
+ Execution Time: 406.410 ms
+(5 rows)
+
+Time: 412.275 ms
+ HashAggregate  (cost=10165.21..10167.21 rows=200 width=40) (actual time=760.719..760.722 rows=7 loops=1)
+   Group Key: product_group
+   Batches: 1  Memory Usage: 40kB
+   ->  Custom Scan (ColumnarScan) on customer_reviews_am  (cost=0.00..1352.69 rows=1762504 width=36) (actual time=4.001..342.513 rows=1762504 loops=1)
+         Columnar Chunk Groups Removed by Filter: 0
+ Planning Time: 0.179 ms
+ Execution Time: 761.701 ms
+(7 rows)
+
+Time: 761.722 ms
+ HashAggregate  (cost=9488.87..9490.87 rows=200 width=12) (actual time=567.630..567.878 rows=1505 loops=1)
+   Group Key: review_date
+   Batches: 1  Memory Usage: 209kB
+   ->  Custom Scan (ColumnarScan) on customer_reviews_am  (cost=0.00..676.35 rows=1762504 width=4) (actual time=2.234..235.049 rows=1762504 loops=1)
+         Columnar Chunk Groups Removed by Filter: 0
+ Planning Time: 0.257 ms
+ Execution Time: 568.043 ms
+(7 rows)
+
+Time: 568.878 ms
+ Custom Scan (ColumnarScan) on customer_reviews_am  (cost=0.00..3381.73 rows=1 width=116) (actual time=47.036..211.818 rows=5 loops=1)
+   Filter: ((product_title ~~ '%Dune%'::text) AND (review_date >= '1998-01-01'::date) AND (review_date <= '1998-12-31'::date) AND (customer_id = 'A27T7HVDXA3K2A'::text))
+   Rows Removed by Filter: 459995
+   Columnar Chunk Groups Removed by Filter: 131
+ Planning Time: 0.287 ms
+ Execution Time: 211.836 ms
+(6 rows)
+
+Time: 212.513 ms
+ Sort  (cost=2173.38..2173.88 rows=200 width=44) (actual time=941.684..941.686 rows=6 loops=1)
+   Sort Key: (width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5))
+   Sort Method: quicksort  Memory: 25kB
+   ->  HashAggregate  (cost=2161.23..2165.73 rows=200 width=44) (actual time=941.664..941.670 rows=6 loops=1)
+         Group Key: width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5)
+         Batches: 1  Memory Usage: 40kB
+         ->  Custom Scan (ColumnarScan) on customer_reviews_am  (cost=0.00..2095.14 rows=8813 width=8) (actual time=1.673..668.622 rows=1198218 loops=1)
+               Filter: (product_group = 'Book'::text)
+               Rows Removed by Filter: 564286
+               Columnar Chunk Groups Removed by Filter: 0
+ Planning Time: 0.191 ms
+ Execution Time: 941.719 ms
+(12 rows)
+
+Time: 942.433 ms
+ROLLBACK
+Time: 0.324 ms

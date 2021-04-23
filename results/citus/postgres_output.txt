@@ -1,0 +1,102 @@
+BEGIN
+Time: 0.509 ms
+ Finalize Aggregate  (cost=62835.61..62835.62 rows=1 width=8) (actual time=3037.356..3039.372 rows=1 loops=1)
+   ->  Gather  (cost=62835.40..62835.61 rows=2 width=8) (actual time=3037.217..3039.360 rows=3 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Partial Aggregate  (cost=61835.40..61835.41 rows=1 width=8) (actual time=3027.509..3027.510 rows=1 loops=3)
+               ->  Parallel Seq Scan on customer_reviews_n  (cost=0.00..59999.52 rows=734352 width=0) (actual time=0.235..2943.366 rows=587501 loops=3)
+ Planning Time: 3.603 ms
+ Execution Time: 3040.401 ms
+(8 rows)
+
+Time: 3056.358 ms (00:03.056)
+ Finalize Aggregate  (cost=64671.50..64671.51 rows=1 width=40) (actual time=3073.812..3076.071 rows=1 loops=1)
+   ->  Gather  (cost=64671.28..64671.49 rows=2 width=40) (actual time=3073.655..3076.048 rows=3 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Partial Aggregate  (cost=63671.28..63671.29 rows=1 width=40) (actual time=3069.238..3069.239 rows=1 loops=3)
+               ->  Parallel Seq Scan on customer_reviews_n  (cost=0.00..59999.52 rows=734352 width=4) (actual time=0.331..2940.050 rows=587501 loops=3)
+ Planning Time: 4.743 ms
+ Execution Time: 3076.174 ms
+(8 rows)
+
+Time: 3085.765 ms (00:03.086)
+ Finalize GroupAggregate  (cost=64671.38..64672.39 rows=4 width=13) (actual time=3244.103..3246.775 rows=7 loops=1)
+   Group Key: product_group
+   ->  Gather Merge  (cost=64671.38..64672.31 rows=8 width=13) (actual time=3244.092..3246.761 rows=16 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Sort  (cost=63671.36..63671.37 rows=4 width=13) (actual time=3237.797..3237.799 rows=5 loops=3)
+               Sort Key: product_group
+               Sort Method: quicksort  Memory: 25kB
+               Worker 0:  Sort Method: quicksort  Memory: 25kB
+               Worker 1:  Sort Method: quicksort  Memory: 25kB
+               ->  Partial HashAggregate  (cost=63671.28..63671.32 rows=4 width=13) (actual time=3237.733..3237.736 rows=5 loops=3)
+                     Group Key: product_group
+                     Batches: 1  Memory Usage: 24kB
+                     Worker 0:  Batches: 1  Memory Usage: 24kB
+                     Worker 1:  Batches: 1  Memory Usage: 24kB
+                     ->  Parallel Seq Scan on customer_reviews_n  (cost=0.00..59999.52 rows=734352 width=9) (actual time=0.363..2970.272 rows=587501 loops=3)
+ Planning Time: 1.799 ms
+ Execution Time: 3248.698 ms
+(18 rows)
+
+Time: 3261.942 ms (00:03.262)
+ Finalize GroupAggregate  (cost=64747.34..65061.24 rows=1239 width=12) (actual time=3090.647..3093.151 rows=1505 loops=1)
+   Group Key: review_date
+   ->  Gather Merge  (cost=64747.34..65036.46 rows=2478 width=12) (actual time=3090.637..3092.301 rows=3806 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Sort  (cost=63747.32..63750.42 rows=1239 width=12) (actual time=3085.619..3085.766 rows=1269 loops=3)
+               Sort Key: review_date
+               Sort Method: quicksort  Memory: 119kB
+               Worker 0:  Sort Method: quicksort  Memory: 103kB
+               Worker 1:  Sort Method: quicksort  Memory: 102kB
+               ->  Partial HashAggregate  (cost=63671.28..63683.67 rows=1239 width=12) (actual time=3084.847..3085.105 rows=1269 loops=3)
+                     Group Key: review_date
+                     Batches: 1  Memory Usage: 193kB
+                     Worker 0:  Batches: 1  Memory Usage: 193kB
+                     Worker 1:  Batches: 1  Memory Usage: 193kB
+                     ->  Parallel Seq Scan on customer_reviews_n  (cost=0.00..59999.52 rows=734352 width=4) (actual time=0.370..2887.514 rows=587501 loops=3)
+ Planning Time: 1.116 ms
+ Execution Time: 3094.304 ms
+(18 rows)
+
+Time: 3099.444 ms (00:03.099)
+ Gather  (cost=1000.00..68343.13 rows=1 width=58) (actual time=292.263..2874.039 rows=5 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on customer_reviews_n  (cost=0.00..67343.03 rows=1 width=58) (actual time=287.098..2866.471 rows=2 loops=3)
+         Filter: ((product_title ~~ '%Dune%'::text) AND (review_date >= '1998-01-01'::date) AND (review_date <= '1998-12-31'::date) AND (customer_id = 'A27T7HVDXA3K2A'::text))
+         Rows Removed by Filter: 587500
+ Planning Time: 5.563 ms
+ Execution Time: 2874.069 ms
+(8 rows)
+
+Time: 2887.445 ms (00:02.887)
+ Finalize GroupAggregate  (cost=102064.56..108764.83 rows=24738 width=44) (actual time=3222.664..3225.083 rows=6 loops=1)
+   Group Key: (width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5))
+   ->  Gather Merge  (cost=102064.56..107837.16 rows=49476 width=44) (actual time=3222.651..3225.061 rows=18 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Sort  (cost=101064.53..101126.38 rows=24738 width=44) (actual time=3216.850..3216.852 rows=6 loops=3)
+               Sort Key: (width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5))
+               Sort Method: quicksort  Memory: 25kB
+               Worker 0:  Sort Method: quicksort  Memory: 25kB
+               Worker 1:  Sort Method: quicksort  Memory: 25kB
+               ->  Partial HashAggregate  (cost=94924.42..99259.34 rows=24738 width=44) (actual time=3216.708..3216.806 rows=6 loops=3)
+                     Group Key: width_bucket((length(product_title))::double precision, '1'::double precision, '50'::double precision, 5)
+                     Batches: 1  Memory Usage: 793kB
+                     Worker 0:  Batches: 1  Memory Usage: 793kB
+                     Worker 1:  Batches: 1  Memory Usage: 793kB
+                     ->  Parallel Seq Scan on customer_reviews_n  (cost=0.00..65581.32 rows=499457 width=8) (actual time=0.517..3088.055 rows=399406 loops=3)
+                           Filter: (product_group = 'Book'::text)
+                           Rows Removed by Filter: 188095
+ Planning Time: 0.206 ms
+ Execution Time: 3228.107 ms
+(20 rows)
+
+Time: 3237.029 ms (00:03.237)
+ROLLBACK
+Time: 0.207 ms

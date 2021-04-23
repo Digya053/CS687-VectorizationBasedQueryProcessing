@@ -1,0 +1,38 @@
+BEGIN;
+EXPLAIN ANALYZE SELECT count(*) FROM customer_reviews;
+EXPLAIN ANALYZE SELECT avg(review_votes), sum(review_votes) FROM 
+customer_reviews;
+EXPLAIN ANALYZE SELECT
+    product_group, sum(review_helpful_votes) AS total_helpful_votes
+FROM
+    customer_reviews
+GROUP BY
+    product_group;
+EXPLAIN ANALYZE SELECT
+    review_date, count(review_date) AS review_count
+FROM
+    customer_reviews
+GROUP BY
+    review_date;
+EXPLAIN ANALYZE SELECT
+    customer_id, review_date, review_rating, product_id, product_title
+FROM
+    customer_reviews
+WHERE
+    customer_id ='A27T7HVDXA3K2A' AND
+    product_title LIKE '%Dune%' AND
+    review_date >= '1998-01-01' AND
+    review_date <= '1998-12-31';
+EXPLAIN ANALYZE SELECT
+    width_bucket(length(product_title), 1, 50, 5) title_length_bucket,
+    round(avg(review_rating), 2) AS review_average,
+    count(*)
+FROM
+   customer_reviews
+WHERE
+    product_group = 'Book'
+GROUP BY
+    title_length_bucket
+ORDER BY
+    Title_length_bucket;
+ROLLBACK;
